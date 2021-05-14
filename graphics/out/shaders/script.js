@@ -81,7 +81,7 @@ function install_effect(canvas,effect_frag_source) {
   };
   var redraw = function(t) {
       if (timerCallbacks.length > 0) {
-          timerCallbacks.forEach(function (cb) { cb(t/1000) });
+          timerCallbacks.forEach(function (cb) { cb(t/3000000) });
 	  // queue_draw(); // in cb
       }
       // gl.clear(gl.COLOR_BUFFER_BIT);
@@ -208,7 +208,7 @@ function go(uniforms,effect) {
     window.onresize = function() {
 	canvas.width  = window.innerWidth;
 	canvas.height = window.innerHeight;
-	canvas.onresize();
+	//canvas.onresize();
     };
     window.onresize();
 }
