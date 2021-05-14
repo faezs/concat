@@ -144,8 +144,10 @@ class EvalE a where
   evalE = (fmap.fmap) abst evalE
 
 evalEs :: EvalE a => Model -> [E] -> Z3 a
-evalEs model es = do (a,[]) <- runStateT (evalE model) es
-                     return a
+evalEs model es = do xs <- runStateT (evalE model) es
+                     case xs of
+                       (a,[]) -> return a
+                       _ -> error "evalEs: unexpected non-empty list"
 
 -- type EvalAst m a = Model -> E -> m (Maybe a)
 
@@ -153,10 +155,13 @@ evalPrim :: EvalAst Z3 a' -> (a' -> a) -> Model -> EvalM a
 evalPrim ev f m =
   do es <- get
      case es of
-       []      -> fail "evalPrim: exhausted ASTs"
-       (e:es') -> do Just a' <- lift (ev m e)
-                     put es'
-                     return (f a')
+       []      -> error "evalPrim: exhausted ASTs"
+       (e:es') -> do as <- lift (ev m e)
+                     case as of
+                       Just a' -> do
+                         put es'
+                         return (f a')
+                       Nothing -> error "evalPrim: exhausted ASTs"
 
 instance EvalE Bool   where evalE = evalPrim evalBool id
 instance EvalE Int    where evalE = evalPrim evalInt  fromInteger
