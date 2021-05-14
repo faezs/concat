@@ -21,7 +21,7 @@
 
 module ConCat.Graphics.GLSL
   ( genHtml,runHtml, Widgets -- ,Widget(..),Widgets(..)
-  , unitW, timeW, sliderW, pairW
+  , unitW, timeW, sliderW, pairW, glsl, shaderDefs
   ) where
 
 -- import Control.Applicative (liftA2)
